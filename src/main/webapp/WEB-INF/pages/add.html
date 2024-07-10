@@ -24,7 +24,6 @@
     <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</div>
     <br/>
     <input type="submit" value="Add new user"/>
-    <div style="color: red" th:if="${error}" th:text="${error}"></div>
 </form>
 </body>
 </html>

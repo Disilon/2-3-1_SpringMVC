@@ -8,27 +8,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import web.dao.JpaUserDao;
 import web.model.User;
+import web.service.UserService;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@Transactional
 public class UserController {
 
-    private final JpaUserDao userDao;
+    private final UserService userService;
 
     @Autowired
-    public UserController(JpaUserDao userDao) {
-        this.userDao = userDao;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping(value = "/")
     public String listOfUsers(ModelMap model) {
-        List<User> users = userDao.findAll();
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "users";
     }
@@ -41,7 +39,7 @@ public class UserController {
 
     @GetMapping(value = "/edit")
     public String editUser(@RequestParam(name = "id") Long id, ModelMap model) {
-        User user = userDao.findById(id);
+        User user = userService.findById(id);
         model.addAttribute("user", user);
         return "edit";
     }
@@ -51,7 +49,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return "add";
         }
-        userDao.save(user);
+        userService.save(user);
         return "redirect:/";
     }
 
@@ -62,16 +60,13 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return "edit";
         }
-        userDao.update(user);
+        userService.update(user);
         return "redirect:/";
     }
 
     @GetMapping(value = "/delete")
     public String delete(@RequestParam(name = "id") Long id) {
-        User user = userDao.findById(id);
-        if (user != null) {
-            userDao.delete(id);
-        }
+        userService.delete(id);
         return "redirect:/";
     }
 }

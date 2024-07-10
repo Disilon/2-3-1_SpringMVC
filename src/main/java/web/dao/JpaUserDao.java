@@ -6,9 +6,12 @@ import web.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Repository
 public class JpaUserDao implements UserDao {
+    private static final Logger logger = Logger.getLogger(JpaUserDao.class.getName());
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -24,6 +27,11 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public void delete(Long id) {
+        User user = findById(id);
+        if (user == null) {
+            logger.warning("Trying to remove not existent user. User is null");
+            return;
+        }
         entityManager.remove(findById(id));
     }
 
